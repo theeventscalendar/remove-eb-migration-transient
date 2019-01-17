@@ -106,7 +106,7 @@ class Tribe__Extension__Remove_Eventbrite_Migration_Transient {
      */
     public function old_transient_exists() {
         $transient         = get_transient( self::$transient_key );
-        $transient_timeout = get_option( '_transient_timeout_' . self::$transient_key );
+        $transient_timeout = (bool) get_option( '_transient_timeout_' . self::$transient_key );
 
         return ! empty( $transient ) && false === $transient_timeout;
     }
@@ -135,11 +135,9 @@ class Tribe__Extension__Remove_Eventbrite_Migration_Transient {
     }
 
     /**
-     * After the extension's deleted under this exte plugin row.
+     * A deactivation notice that shows under the extension's listing in the Plugins list table.
      *
      * @since 1.0.0
-     *
-     * @return bool true if successful, false otherwise
      */
     public function maybe_add_deactivation_notice( $plugin_file, $plugin_data, $status ) {
 
@@ -162,7 +160,12 @@ class Tribe__Extension__Remove_Eventbrite_Migration_Transient {
             esc_html__( 'You can now deactivate this extension, then delete it.', 'tribe-extension' )
         );
     }
-
+    
+    /**
+     * Some styles for the plugin row notice.
+     *
+     * @since 1.0.0
+     */
     public function admin_head_css() {
         ?><style>
         tr[data-plugin="remove-eb-migration-transient.php"] td,
@@ -197,7 +200,7 @@ class Tribe__Extension__Remove_Eventbrite_Migration_Transient {
      * @return bool true if successful, false otherwise
      */
     public static function cleanup_on_deactivation() {
-        return delete_option( Tribe__Extension__Remove_Eventbrite_Migration_Transient::$deleted_key );
+        return delete_option( self::$deleted_key );
     }
 
 }
